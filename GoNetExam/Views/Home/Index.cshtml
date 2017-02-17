@@ -1,0 +1,87 @@
+﻿@model  GoNetExam.Models.Contact
+
+@{
+    ViewBag.Title = "GoNet Exam";
+}
+
+<style>
+    .EstiloBAMSA {
+        border-color: #E6E6E6;
+        border-width: 1px;
+        border-style: solid;
+    }
+</style>
+
+<div class="jumbotron">
+    <h1>GoNet Exam</h1>
+    <p class="lead">GoNet Exam by <strong><a href="http://aacosta.com.mx/" target="_blank">Antonio Acosta Murillo</a></strong></p>
+</div>
+
+<div class="row">
+    <div class="col-md-6 col-xs-6 col-lg-6 col-sm-6">
+        <h2>Getting Contact</h2>
+        <form id="formContact">
+            <div class="form-group">
+                <label for="Name">Name</label>
+                <input type="text" class="form-control" id="Name" name="Name" placeholder="@Model.Name">
+            </div>
+            <div class="form-group">
+                <label for="Mobile">Mobile</label>
+                <input type="tel" class="form-control" id="Mobile" name="Mobile" placeholder="@Model.Mobile">
+            </div>
+            <div class="form-group">
+                <label for="Website">Website</label>
+                <input type="url" class="form-control" id="Website" name="Website" placeholder="@Model.Website">
+            </div>
+            <div class="form-group">
+                <label for="Email">Email</label>
+                <input type="email" class="form-control" id="Email" name="Email" placeholder="@Model.Email">
+            </div>
+            <div class="form-group">
+                <label for="Skype">Skype</label>
+                <input type="text" class="form-control" id="Skype" name="Skype" placeholder="@Model.Skype">
+            </div>
+        </form>
+        <button id="btnGetContact" type="button" class="btn btn-danger" onclick="jQueryController.clearForm()">Clear</button>
+        <button id="btnGetContact" type="button" class="btn btn-primary" onclick="jQueryController.getContact()">Get</button>
+    </div>
+    <div class="col-md-6 col-xs-6 col-lg-6 col-sm-6">
+        <div id="infoDiv" hidden>
+            <h2>Your Contact Info</h2>
+            <ul class="EstiloBAMSA" id="infoList"></ul>
+        </div>
+    </div>
+</div>
+
+<script>
+    var jQueryController = {
+        getContact: function () {
+            var form = $('#formContact');
+            var url = window.location.origin;
+            var html = '';
+
+            url = url.concat('/Home/GetContact');
+            $.post(url, form.serialize())
+                .done(function (data) {
+                    console.log(data);
+                    $.each(data, function (index, item) {
+                        if (item) {
+                            if (index === 'LuckyNumber') {
+                                html += '<li><strong>Lucky Number: ' + item + '</strong></li>';
+                            }
+                            else {
+                                html += '<li>' + index + ': ' + item + '</li>';
+                            }
+                        }
+                    });
+                    $("#infoList").append(html);
+                });
+            $('#infoDiv').show();
+
+        },
+        clearForm: function () {
+            $('#formContact')[0].reset();
+            $('#infoDiv').hide();
+        }
+    }
+</script>
